@@ -1,12 +1,13 @@
 const { default: mongoose } = require("mongoose");
 
 const accountScema = new mongoose.Schema({
-    id: String,
+    id: {type : String, unique : true, required:true},
     passWord: String,
-    email: String,
+    email: {type : String, unique : true, required:true},
     birth: String,
+    // birth:Number,
     question: String,
     answer: String,
     
 })
-export default mongoose.model("account", accountScema);
+module.exports =  mongoose.model("account", accountScema);
