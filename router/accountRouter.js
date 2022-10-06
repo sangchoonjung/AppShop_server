@@ -11,6 +11,7 @@ router.post("/login", async (req, resp) => {
 
     try {
         if (req.body.id && req.body.passWord) {
+            let auth = false;
             const data = await Account.findOne({ id: req.body.id });
             data ? auth = await bcrypt.check(req.body.passWord, data.passWord) : auth = false;
             if (auth) {
@@ -55,51 +56,90 @@ router.post("/register", async (req, resp) => {
 });
 
 
-router.post("/idCheck",async (req,resp)=>{
+router.post("/idCheck", async (req, resp) => {
     //아이디체크
     console.log(req.body.id)
-    try{
+    try {
 
-        const response = await Account.findOne({id:req.body.id})
-        if(response===null){
+        const response = await Account.findOne({ id: req.body.id })
+        if (response === null) {
             //아이디가 없음(null)이면 result true
-            resp.status(200).json({result:true})
-        }else{
+            resp.status(200).json({ result: true })
+        } else {
             //아이디가 있음(data)이면 result false
-            resp.status(200).json({result:false})
+            resp.status(200).json({ result: false })
         }
-    }catch(e){
-        resp.status(401).json({ result: false});
+    } catch (e) {
+        resp.status(401).json({ result: false });
 
     }
 });
 
 //아이디 찾기
-router.post("/findId",async(req,resp)=>{
+router.post("/findId", async (req, resp) => {
     console.log(req.body)
-try{
-    const response = await Account.findOne({email:req.body.email});
-    console.log(response)
-    if(response){
-        resp.status(200).json({result:true,id:response.id})
-    }else{
-        resp.status(200).json({result:false,id:"미가입"})
+
+    try {
+        const response = await Account.findOne({ email: req.body.email });
+        console.log(response)
+        if (response) {
+            resp.status(200).json({ result: true, id: response.id })
+        } else {
+            resp.status(200).json({ result: false, id: "미가입" })
+        }
+    } catch (e) {
+        console.log(e.message)
+        resp.status(401).json({ result: false });
     }
-}catch(e){
-    console.log(e.message)
-    resp.status(401).json({ result: false});
-}
 
 });
 
 
 //비밀번호 재설정 (일단 경로만 설정)
-router.post("/resetPassWord", async(req,resp)=>{
+router.post("/resetPassWord", async (req, resp) => {
 
 });
 
 //개인정보 변경
-router.post("/updateAccount", async(req,resp)=>{
+router.post("/updateAccount", async (req, resp) => {
+
+    try {
+        if (!req.body.passWordNow) {
+            return;
+        }
+        console.log(req.body)
+        let auth;
+        const data = await Account.findOne({ id: req.body.id });
+        console.log(data)
+        data ? auth = await bcrypt.check(req.body.passWordNow, data.passWord) : auth = false;
+        console.log(auth)
+
+        if (auth) {
+            if (req.body.newPassWord) {
+
+            }
+            let newData;
+            if (req.body.newPassWord) {
+                const hash = await bcrypt.hash(req.body.newPassWord)
+                newData = { ...req.body, passWord: hash }
+            } else {
+                newData = { ...req.body }
+            }
+            const response = await Account.findOneAndUpdate({
+                id: req.body.id
+            }, {
+                newData
+            }, { returnDocument: "after" })
+            console.log(response)
+            resp.status(200).json({result:true,data:response});
+        } else {
+            resp.status(200).json({ error: "Error", result: false })
+        }
+
+    }
+    catch (e) {
+        console.log(e.message);
+    }
 
 });
 
