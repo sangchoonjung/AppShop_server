@@ -97,7 +97,7 @@ router.post("/findId", async (req, resp) => {
 
 //비밀번호 재설정 (일단 경로만 설정)
 router.post("/resetPassWord", async (req, resp) => {
-
+    
 });
 
 //개인정보 변경
@@ -110,14 +110,11 @@ router.post("/updateAccount", async (req, resp) => {
         console.log(req.body)
         let auth;
         const data = await Account.findOne({ id: req.body.id });
-        console.log(data)
+        // console.log(data)
         data ? auth = await bcrypt.check(req.body.passWordNow, data.passWord) : auth = false;
-        console.log(auth)
+        // console.log(auth)
 
         if (auth) {
-            if (req.body.newPassWord) {
-
-            }
             let newData;
             if (req.body.newPassWord) {
                 const hash = await bcrypt.hash(req.body.newPassWord)
@@ -125,15 +122,17 @@ router.post("/updateAccount", async (req, resp) => {
             } else {
                 newData = { ...req.body }
             }
+            // console.log(newData.passWord)
+            // console.log(newData)
             const response = await Account.findOneAndUpdate({
                 id: req.body.id
-            }, {
+            },
                 newData
-            }, { returnDocument: "after" })
-            console.log(response)
-            resp.status(200).json({result:true,data:response});
+                , { returnDocument: "after" })
+            // console.log(response)
+            resp.status(200).json({ result: true, data: response });
         } else {
-            resp.status(200).json({ error: "Error", result: false })
+            resp.status(200).json({ message: "Error", result: false })
         }
 
     }
