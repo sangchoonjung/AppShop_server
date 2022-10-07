@@ -5,7 +5,7 @@ const bcrypt = require("../bcrypt/bcrypt.js")
 
 const router = express.Router();
 
-
+//로그인하기
 router.post("/login", async (req, resp) => {
     console.log(req.body);
 
