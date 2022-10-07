@@ -8,6 +8,9 @@ const accountScema = new mongoose.Schema({
     // birth:Number,
     question: String,
     answer: String,
+    zzimList: { type: Array,default:[] },
+    productPendingItem: { type: Array, default: [] },
+    productCompleteItem:{type:Array,default:[]}
     
 });
 module.exports =  mongoose.model("account", accountScema);
