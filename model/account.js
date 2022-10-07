@@ -9,5 +9,5 @@ const accountScema = new mongoose.Schema({
     question: String,
     answer: String,
     
-})
+});
 module.exports =  mongoose.model("account", accountScema);
