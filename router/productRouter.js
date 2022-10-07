@@ -22,7 +22,7 @@ router.post("/searchProductList", async (req, resp) => {
     const requestSearchItem = req.body.search;
     console.log(requestSearchItem);
     try {
-        const data = await Product.find({ title: { $regex: requestSearchItem }});
+        const data = await Product.find({ title: { $regex: String(requestSearchItem) }});
             resp.status(200).json({ result: true, message: data });
     } catch (e) {
         console.log(e);
@@ -34,9 +34,8 @@ router.post("/searchProductList", async (req, resp) => {
 //카테고리 선정을 통한 상품 읽어오기
 router.post("/categoryProductList", async (req, resp) => {
     const requestSearchItem = req.body.category;
-    console.log(requestSearchItem);
     try {
-        const data = await Product.find({ category: { $regex: requestSearchItem } });
+        const data = await Product.find({ category: { $in: requestSearchItem } });
         resp.status(200).json({ result: true, message: data });
     } catch (e) {
         console.log(e);
