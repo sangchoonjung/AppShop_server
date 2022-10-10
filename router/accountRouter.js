@@ -97,6 +97,24 @@ router.post("/findId", async (req, resp) => {
 
 //비밀번호 재설정 (일단 경로만 설정)
 router.post("/resetPassWord", async (req, resp) => {
+    try{
+        console.log(req.body)
+        const response = await Account.findOne({id:req.body.id});
+        //질문이랑 비교해서 맞으면 update (아직안했음)
+        console.log(response,"response")
+        if(!response){
+            throw new Error("idNull")
+        }
+        resp.status(200).json({ result: false })
+
+    }catch(e){
+        console.log(e.message)
+        if(e.message === "idNull"){
+            return resp.status(200).json({result:false,message:"정보없음"});
+        }
+        resp.status(401).json({ result: false });
+
+    }
     
 });
 
