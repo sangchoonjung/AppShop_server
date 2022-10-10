@@ -8,6 +8,7 @@ const app = express();
 
 const accountRouter = require("./router/accountRouter");
 const productRouter = require("./router/productRouter");
+const userInfoRouter = require("./router/userInfoRouter");
 
 dotenv.config();
 mongoose.connect(process.env.MONGODB_URI,{dbName:"perfume"});
@@ -20,6 +21,9 @@ app.use(morgan("dev"));
 
 app.use("/api/account", accountRouter);
 app.use("/api/product", productRouter);
+app.use("/api/userInfo", userInfoRouter)
+
+
 app.listen(8080,()=>{
     console.log("PERFUME SERVER START");
 });
