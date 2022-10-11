@@ -46,12 +46,17 @@ router.post("/register", async (req, resp) => {
         const response = await Account.create({ ...req.body, passWord: hash });
         console.log(response)
 
+        resp.status(201).json({result:true,message:response})
         // }else{
         // resp.json({ result: false, message: "register failed" });
         // }
     } catch (e) {
         console.log(e.message, "error")
-        resp.status(401).json({ result: false, message: "error" });
+        // console.log(e.message.includes("email"))
+        if(e.message.includes("email")){
+            return resp.status(401).json({result:false,message:"중복된 이메일"});
+        }
+        resp.status(400).json({ result: false, message: "error" });
     }
 });
 

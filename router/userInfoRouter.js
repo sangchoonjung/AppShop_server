@@ -14,7 +14,6 @@ router.post("/zzim", async (req, resp) => {
         const  response = await Account.findOneAndUpdate({id:user},{
             zzimList:value
         })
-        //찜을 목록을 받아서 있으면 빼고 없으면 넣고????
         resp.status(200).json({ result: true, message: response });
     } catch (e) {
         console.log(e.message)
