@@ -46,15 +46,15 @@ router.post("/register", async (req, resp) => {
         const response = await Account.create({ ...req.body, passWord: hash });
         console.log(response)
 
-        resp.status(201).json({result:true,message:response})
+        resp.status(201).json({ result: true, message: response })
         // }else{
         // resp.json({ result: false, message: "register failed" });
         // }
     } catch (e) {
         console.log(e.message, "error")
         // console.log(e.message.includes("email"))
-        if(e.message.includes("email")){
-            return resp.status(401).json({result:false,message:"중복된 이메일"});
+        if (e.message.includes("email")) {
+            return resp.status(401).json({ result: false, message: "중복된 이메일" });
         }
         resp.status(400).json({ result: false, message: "error" });
     }
@@ -102,25 +102,25 @@ router.post("/findId", async (req, resp) => {
 
 //비밀번호 재설정 (일단 경로만 설정)
 router.post("/resetPassWord", async (req, resp) => {
-    try{
+    try {
         console.log(req.body)
-        const response = await Account.findOne({id:req.body.id});
+        const response = await Account.findOne({ id: req.body.id });
         //질문이랑 비교해서 맞으면 update (아직안했음)
-        console.log(response,"response")
-        if(!response){
+        console.log(response, "response")
+        if (!response) {
             throw new Error("idNull")
         }
         resp.status(200).json({ result: false })
 
-    }catch(e){
+    } catch (e) {
         console.log(e.message)
-        if(e.message === "idNull"){
-            return resp.status(200).json({result:false,message:"정보없음"});
+        if (e.message === "idNull") {
+            return resp.status(200).json({ result: false, message: "정보없음" });
         }
         resp.status(401).json({ result: false });
 
     }
-    
+
 });
 
 //개인정보 변경
@@ -164,5 +164,35 @@ router.post("/updateAccount", async (req, resp) => {
     }
 
 });
+
+
+
+
+router.post("/pendingRequest", async (req, resp) => {
+
+    try {
+        console.log(req.body)
+        const data = await Account.findOne({ id: req.body.id });
+        console.log(data.productPendingItem)
+
+        let newData=[...data.productPendingItem,{...req.body}];
+        console.log(newData)
+        const response = await Account.findOneAndUpdate({
+            id: req.body.id
+        },
+{        productPendingItem:newData}
+            , { returnDocument: "after" })
+        resp.status(200).json({ result: true, data: response });
+
+    }
+    catch (e) {
+    console.log(e.message);
+    resp.status(401).json({ result: false });
+
+}
+
+});
+
+
 
 module.exports = router;
