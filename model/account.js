@@ -8,7 +8,7 @@ const accountScema = new mongoose.Schema({
     // birth:Number,
     question: String,
     answer: String,
-    zzimList: { type: Array,default:[] },
+    zzimList: [{date:Number,id:String}],
     productPendingItem: { type: Array, default: [] },
     productCompleteItem:{type:Array,default:[]}
     

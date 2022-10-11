@@ -1,7 +1,7 @@
 const { default: mongoose } = require("mongoose");
 
 const productSchema = new mongoose.Schema({
-    key: { type: Number, unique: true, required: true },
+    key: { type: String, unique: true, required: true },
     from: String,
     "Delivery method": String,
     category: String,
