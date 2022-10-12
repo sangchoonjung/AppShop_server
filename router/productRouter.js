@@ -59,7 +59,7 @@ router.post("/zzimProductList", async (req, resp) => {
 
         const sortedValue = data.map(e => {
             const idx = requestSearchItem.findIndex(elm => elm.id === e.key)
-            return { ...e, date: requestSearchItem[idx].date }
+            return { ...e, date: requestSearchItem[idx].date, zzimType: requestSearchItem[idx].zzimType }
         }
         ).sort((a, b) => a.date - b.date)
 
