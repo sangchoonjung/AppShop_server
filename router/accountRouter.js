@@ -171,25 +171,29 @@ router.post("/updateAccount", async (req, resp) => {
 router.post("/pendingRequest", async (req, resp) => {
 
     try {
-        console.log(req.body)
+        // console.log(req.body)
         const data = await Account.findOne({ id: req.body.id });
-        console.log(data.productPendingItem)
+        // console.log(data.productPendingItem)
 
-        let newData=[...data.productPendingItem,{...req.body}];
-        console.log(newData)
+        let newData = [...data.productPendingItem, { ...req.body }];
+        // console.log(newData)
         const response = await Account.findOneAndUpdate({
             id: req.body.id
-        },
-{        productPendingItem:newData}
-            , { returnDocument: "after" })
-        resp.status(200).json({ result: true, data: response });
+        }, {
+            productPendingItem: newData
+        }, {
+            returnDocument: "after"
+        });
+        console.log(response.productPendingItem)
+
+        resp.status(200).json({ result: true, message: response.productPendingItem });
 
     }
     catch (e) {
-    console.log(e.message);
-    resp.status(401).json({ result: false });
+        console.log(e.message);
+        resp.status(401).json({ result: false });
 
-}
+    }
 
 });
 
