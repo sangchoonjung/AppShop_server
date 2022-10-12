@@ -72,9 +72,9 @@ router.post("/zzimProductList", async (req, resp) => {
 
 
 
-router.post("/pendingProductList", async (req, resp) => {
+router.post("/requestProductList", async (req, resp) => {
     try {
-        const requestSearchItem = req.body.pendingList;
+        const requestSearchItem = req.body.list;
         console.log(requestSearchItem)
         const itemId = requestSearchItem.map(e => { return e.productId })
 
@@ -92,5 +92,11 @@ router.post("/pendingProductList", async (req, resp) => {
     } catch (e) {
         console.log(e.message)
     }
-})
+});
+
+
+
+
+
+
 module.exports = router;
