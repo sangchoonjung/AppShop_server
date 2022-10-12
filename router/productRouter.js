@@ -58,12 +58,36 @@ router.post("/zzimProductList", async (req, resp) => {
         // console.log(data)
 
         const sortedValue = data.map(e => {
-            const idx= requestSearchItem.findIndex(elm=>elm.id===e.key)
-            return {...e, date : requestSearchItem[idx].date}
+            const idx = requestSearchItem.findIndex(elm => elm.id === e.key)
+            return { ...e, date: requestSearchItem[idx].date }
         }
-        ).sort((a,b)=>a.date-b.date)
-        
-        console.log(sortedValue,"sortedValue")
+        ).sort((a, b) => a.date - b.date)
+
+        console.log(sortedValue, "sortedValue")
+        resp.status(200).json({ result: true, message: sortedValue })
+    } catch (e) {
+        console.log(e.message)
+    }
+});
+
+
+
+router.post("/pendingProductList", async (req, resp) => {
+    try {
+        const requestSearchItem = req.body.pendingList;
+        console.log(requestSearchItem)
+        const itemId = requestSearchItem.map(e => { return e.productId })
+
+        const data = await Product.find({ key: { $in: itemId } }).lean();
+        // console.log(data)
+
+        const sortedValue = data.map(e => {
+            const idx = requestSearchItem.findIndex(elm => elm.productId === e.key)
+            return { ...e, date: requestSearchItem[idx].date }
+        }
+        ).sort((a, b) => a.date - b.date)
+
+        console.log(sortedValue, "sortedValue")
         resp.status(200).json({ result: true, message: sortedValue })
     } catch (e) {
         console.log(e.message)
