@@ -59,7 +59,7 @@ router.post("/zzimProductList", async (req, resp) => {
 
         const sortedValue = data.map(e => {
             const idx = requestSearchItem.findIndex(elm => elm.id === e.key)
-            return { ...e, date: requestSearchItem[idx].date, zzimType: requestSearchItem[idx].zzimType }
+            return { ...e, date: requestSearchItem[idx].date, zzimType:true }
         }
         ).sort((a, b) => a.date - b.date)
 
@@ -71,7 +71,7 @@ router.post("/zzimProductList", async (req, resp) => {
 });
 
 
-
+//pending
 router.post("/requestProductList", async (req, resp) => {
     try {
         const requestSearchItem = req.body.list;
@@ -94,7 +94,7 @@ router.post("/requestProductList", async (req, resp) => {
     }
 });
 
-
+//complete
 router.post("/requestProductListComplete",async(req,resp)=>{
     try {
         const requestSearchItem = req.body.list;
