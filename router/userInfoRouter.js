@@ -24,6 +24,7 @@ router.post("/zzim", async (req, resp) => {
 
 });
 
+//리뷰
 router.post("/requestReview", async (req, resp) => {
     const data = req.body.formData._parts
     try {
@@ -32,6 +33,10 @@ router.post("/requestReview", async (req, resp) => {
             image: data[1][1],
             id: data[2][1],
         });
+
+        
+
+
         if (response) {
             const updateBefore = await Account.findOne({ id: data[2][1] }).select("completeReview").lean()
             // console.log(updateBefore.completeReview, "updateBefore")
@@ -43,6 +48,9 @@ router.post("/requestReview", async (req, resp) => {
             })
             return resp.status(200).json({ result: true, message: updateAfter });
         }
+
+
+
         resp.status(401).json({ result: false });
     } catch (e) {
         console.log(e.message);
