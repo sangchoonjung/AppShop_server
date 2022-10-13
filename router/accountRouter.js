@@ -110,6 +110,15 @@ router.post("/resetPassWord", async (req, resp) => {
         if (!response) {
             throw new Error("idNull")
         }
+        // console.log(response?.question===req.body.question,response?.answer===req.body.answer)
+        if(response?.question===req.body?.question,response?.answer===req.body?.answer){
+            console.log("일치")
+            const hash = await bcrypt.hash(req.body.passWord)
+            const rst = await Account.findOneAndUpdate({id:req.body.id},{
+                passWord :hash
+            },{returnDocument:"after"});
+            return resp.status(200).json({result:true,message:rst});
+        }
         resp.status(200).json({ result: false })
 
     } catch (e) {
