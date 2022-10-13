@@ -1,6 +1,6 @@
 const { default: mongoose } = require("mongoose");
 
-const accountScema = new mongoose.Schema({
+const accountSchema = new mongoose.Schema({
     id: {type : String, unique : true, required:true},
     passWord: String,
     email: {type : String, unique : true, required:true},
@@ -10,7 +10,8 @@ const accountScema = new mongoose.Schema({
     answer: String,
     zzimList: [{date:Number,id:String}],
     productPendingItem: { type: Array, default: [] },
-    productCompleteItem:{type:Array,default:[]}
+    productCompleteItem:{type:Array,default:[]},
+    completeReview :{type:Array,default:[]}
     
 });
-module.exports =  mongoose.model("account", accountScema);
+module.exports =  mongoose.model("account", accountSchema);
