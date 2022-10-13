@@ -10,7 +10,9 @@
         "titleImage": "https://cdn.imweb.me/thumbnail/20201230/1619655898fa7.jpg",
         "detailImage": "https://cdn.imweb.me/upload/S201806045b149b8deb819/69131808d8063.jpg",
         "review": [],
-        "QnA": [], 
+        "QnA": [],
+        "pendingAmount": 0,
+        "saleFee":""
     },
     {
         "key": "2",
@@ -23,6 +25,7 @@
         "detailImage": "https://cdn.imweb.me/upload/S201806045b149b8deb819/7f598e902b3fa.jpg",
         "review": [],
         "QnA": [],
+
     },
     {
         "key": "3",
