@@ -80,14 +80,14 @@ router.post("/requestProductList", async (req, resp) => {
 
         const data = await Product.find({ key: { $in: itemId } }).lean();
         // console.log(data)
-
+        console.log(req.body.type)
         const sortedValue = data.map(e => {
             const idx = requestSearchItem.findIndex(elm => elm.productId === e.key)
-            return { ...e, date: requestSearchItem[idx].date }
+            return { ...e, date: requestSearchItem[idx].date,unit:requestSearchItem[idx].unit,price:requestSearchItem[idx].price,type:req.body.type }
         }
         ).sort((a, b) => a.date - b.date)
 
-        console.log(sortedValue, "sortedValue")
+        console.log(sortedValue, "sortedValue PENDING!!!!!!!!!!!")
         resp.status(200).json({ result: true, message: sortedValue })
     } catch (e) {
         console.log(e.message)
@@ -95,7 +95,27 @@ router.post("/requestProductList", async (req, resp) => {
 });
 
 
+router.post("/requestProductListComplete",async(req,resp)=>{
+    try {
+        const requestSearchItem = req.body.list;
+        console.log(requestSearchItem)
+        const itemId = requestSearchItem.map(e => { return e.productId })
 
+        const data = await Product.find({ key: { $in: itemId } }).lean();
+        // console.log(data)
+        console.log(req.body.type)
+        const sortedValue = data.map(e => {
+            const idx = requestSearchItem.findIndex(elm => elm.productId === e.key)
+            return { ...e, date: requestSearchItem[idx].date,unit:requestSearchItem[idx].unit,price:requestSearchItem[idx].price,type:req.body.type }
+        }
+        ).sort((a, b) => a.date - b.date)
+
+        console.log(sortedValue, "sortedValue COMPLETE!!!!!!!!!!!!!!!!!!")
+        resp.status(200).json({ result: true, message: sortedValue })
+    } catch (e) {
+        console.log(e.message)
+    }
+})
 
 
 
