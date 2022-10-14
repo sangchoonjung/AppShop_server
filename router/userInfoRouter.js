@@ -33,10 +33,6 @@ router.post("/requestReview", async (req, resp) => {
             image: data[1][1],
             id: data[2][1],
         });
-
-        
-
-
         if (response) {
             const updateBefore = await Account.findOne({ id: data[2][1] }).select("completeReview").lean()
             // console.log(updateBefore.completeReview, "updateBefore")
@@ -48,13 +44,34 @@ router.post("/requestReview", async (req, resp) => {
             })
             return resp.status(200).json({ result: true, message: updateAfter });
         }
-
-
-
         resp.status(401).json({ result: false });
     } catch (e) {
         console.log(e.message);
     }
+})
+
+
+
+//일단은 더미코드
+router.post("/pendToComple", async (req, resp) => {
+console.log(req.body);
+try{
+    const origin = await Account.findOne({id:req.body.id}).select("productCompleteItem");
+    // console.log(origin.productCompleteItem,"origin")
+    const response = await Account.findOneAndUpdate({id:req.body.id},{
+        productPendingItem:[],
+        productCompleteItem:[...origin.productCompleteItem,...req.body.pendingList]
+    },{
+        returnDocument:"after"
+    })
+    console.log(response)
+    return resp.status(200).json({result:true,message:response.productCompleteItem});
+}catch(e){
+    console.log(e.message);
+
+}
+
+resp.status(401).json({ result: false });
 })
 
 
