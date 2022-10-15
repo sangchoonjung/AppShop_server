@@ -49,7 +49,7 @@ router.post("/zzimProductList", async (req, resp) => {
         const data = await Product.find({ key: { $in: itemId } }).lean();
         const sortedValue = data.map(e => {
             const idx = requestSearchItem.findIndex(elm => elm.id === e.key)
-            return { ...e, date: requestSearchItem[idx].date, zzimType:true }
+            return { ...e, date: requestSearchItem[idx].date, zzimType: true }
         }
         ).sort((a, b) => a.date - b.date)
         console.log(sortedValue, "sortedValue")
@@ -72,7 +72,7 @@ router.post("/requestProductList", async (req, resp) => {
         // console.log(req.body.type)
         const sortedValue = data.map(e => {
             const idx = requestSearchItem.findIndex(elm => elm.productId === e.key)
-            return { ...e, date: requestSearchItem[idx].date,unit:requestSearchItem[idx].unit,price:requestSearchItem[idx].price,type:req.body.type }
+            return { ...e, date: requestSearchItem[idx].date, unit: requestSearchItem[idx].unit, price: requestSearchItem[idx].price, type: req.body.type }
         }
         ).sort((a, b) => a.date - b.date)
         console.log(sortedValue, "sortedValue PENDING!!!!!!!!!!!")
@@ -84,7 +84,7 @@ router.post("/requestProductList", async (req, resp) => {
 
 
 //complete
-router.post("/requestProductListComplete",async(req,resp)=>{
+router.post("/requestProductListComplete", async (req, resp) => {
     try {
         const requestSearchItem = req.body.list;
         console.log(requestSearchItem)
@@ -95,7 +95,7 @@ router.post("/requestProductListComplete",async(req,resp)=>{
         console.log(req.body.type)
         const sortedValue = data.map(e => {
             const idx = requestSearchItem.findIndex(elm => elm.productId === e.key)
-            return { ...e, date: requestSearchItem[idx].date,unit:requestSearchItem[idx].unit,price:requestSearchItem[idx].price,type:req.body.type }
+            return { ...e, date: requestSearchItem[idx].date, unit: requestSearchItem[idx].unit, price: requestSearchItem[idx].price, type: req.body.type }
         }
         ).sort((a, b) => a.date - b.date)
 
@@ -107,6 +107,40 @@ router.post("/requestProductListComplete",async(req,resp)=>{
 })
 
 
+router.post("/requestQnaAdd", async (req, resp) => {
+    try {
+
+        console.log(req.body)
+        const {qna,productId,userId} = req.body
+        if(qna,productId,userId){
+            return  resp.status(401).json({ result: false });
+        }
+        const origin = Product.findOne({key:productId}).select("QnA").lean()
+
+        const updateProduct = await Product.findOneAndUpdate({key:productId},{
+            "QnA":[...origin.QnA,{
+                writer:userId,
+                question:qna,
+                answer:false,
+                questionDate:Date.now()
+            }]
+        },{
+            returnDocument:"after"
+        });
+//나중에 findOneAndUpdate 써서 answer업데이트하기
+
+if(updateProduct){
+    return resp.status(200).json({ result: true, updateProduct:updateProduct });
+}
+        resp.status(401).json({ result: false });
+
+    } catch (e) {
+
+
+        resp.status(401).json({ result: false });
+    }
+
+})
 
 
 module.exports = router;
