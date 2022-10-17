@@ -12,7 +12,7 @@ const productSchema = new mongoose.Schema({
 
     // review: { type: Array, default: [{rate:String,}] },
     // QnA: { type: Array, default: [] },
-    review: [{rate:String,comments:String}],
+    review: [],
     QnA: [{writer:String,question:String,seller:String,answer:String}]
 });
 module.exports = mongoose.model("product", productSchema);

@@ -27,22 +27,45 @@ router.post("/zzim", async (req, resp) => {
 //리뷰
 router.post("/requestReview", async (req, resp) => {
     const data = req.body.formData._parts
+    // console.log(data)
+    const uid = data[2][1];
+    const content = data[0][1];
+    const imgData = data[1][1];
+    const productId = data[0][1].productId;
+    const completeListOrigin = data[2][1];
+    console.log(uid,content)
     try {
-        const response = await Review.create({
-            content: data[0][1],
-            image: data[1][1],
-            id: data[2][1],
+        
+        const origin = await Product.findOne({key:productId}).select("review").lean()
+        console.log(origin)
+        const updateProduct = await Product.findOneAndUpdate({key:productId},{
+            "review":[...origin.review,{
+                uid:uid,
+                content:{...content},
+                imgData:imgData,
+                reviewDate:Date.now()
+            }]
+        },{
+            returnDocument:"after"
         });
+
         if (response) {
             const updateBefore = await Account.findOne({ id: data[2][1] }).select("completeReview").lean()
             console.log(updateBefore.completeReview, "updateBefore")
+
+        // console.log(update.review)
+
+        if (updateProduct) {
+            const updateBefore = await Account.findOne({ id: uid }).select("completeReview").lean()
+
+
             // console.log(data[0][1].productId, "data[0][1]")
-            const updateAfter = await Account.findOneAndUpdate({ id: data[2][1] }, {
-                completeReview: [...updateBefore?.completeReview, data[0][1].productId]
+            const updateAfter = await Account.findOneAndUpdate({ id: uid }, {
+                completeReview: [...updateBefore?.completeReview, productId]
             }, {
                 returnDocument: "after"
             })
-            return resp.status(200).json({ result: true, message: updateAfter });
+            return resp.status(200).json({ result: true, message: updateAfter,updateProduct:updateProduct });
         }
         console.log(updateAfter.completeReview, "updateAfter")
         resp.status(401).json({ result: false });
