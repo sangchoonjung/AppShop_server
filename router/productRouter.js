@@ -1,7 +1,6 @@
 const express = require('express');
 const { emit } = require('../model/product');
 const Product = require('../model/product');
-const Review = require('../model/review');
 const router = express.Router();
 
 // 전체 상품 읽어오기

@@ -62,13 +62,13 @@ router.post("/requestReview", upload.single("image"), async (req, resp) => {
                     review: req.body.review,
                     uid: uid
                 },
-                imgPath: req.file.path.split('static'),
+                imgPath: req.file.path.split('static')[1],
                 reviewDate: Date.now()
             }]
         }, {
             returnDocument: "after"
         });
-
+        console.log(updateProduct)
         if (updateProduct) {
             const updateBefore = await Account.findOne({ id: uid }).select("completeReview").lean()
 
@@ -83,6 +83,8 @@ router.post("/requestReview", upload.single("image"), async (req, resp) => {
         resp.status(401).json({ result: false });
     } catch (e) {
         console.log(e.message);
+        resp.status(401).json({ result: false });
+
     }
     // })
 
