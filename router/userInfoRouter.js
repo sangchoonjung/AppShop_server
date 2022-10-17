@@ -107,10 +107,10 @@ router.post("/pendToComple", async (req, resp) => {
         return resp.status(200).json({ result: true, message: response.productCompleteItem });
     } catch (e) {
         console.log(e.message);
+        return resp.status(401).json({ result: false });
 
     }
 
-    resp.status(401).json({ result: false });
 })
 
 
