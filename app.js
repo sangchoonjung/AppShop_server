@@ -18,6 +18,7 @@ mongoose.connect(process.env.MONGODB_URI,{dbName:"perfume"});
 app.use(express.json());
 app.use(cors());
 app.use(morgan("dev"));
+app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/account", accountRouter);
 app.use("/api/product", productRouter);

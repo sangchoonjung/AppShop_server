@@ -111,27 +111,28 @@ router.post("/requestQnaAdd", async (req, resp) => {
     try {
 
         console.log(req.body)
-        const {qna,productId,userId} = req.body
-        if(qna,productId,userId){
-            return  resp.status(401).json({ result: false });
+        const { qna, productId, userId } = req.body
+        if (!qna||!productId||!userId) {
+            return resp.status(401).json({ result: false });
         }
-        const origin = Product.findOne({key:productId}).select("QnA").lean()
+        const origin = await Product.findOne({ key: productId }).select("QnA").lean()
 
-        const updateProduct = await Product.findOneAndUpdate({key:productId},{
-            "QnA":[...origin.QnA,{
-                writer:userId,
-                question:qna,
-                answer:false,
-                questionDate:Date.now()
+        const updateProduct = await Product.findOneAndUpdate({ key: productId }, {
+            "QnA": [...origin.QnA, {
+                writer: userId,
+                question: qna,
+                answer: false,
+                questionDate: Date.now()
             }]
-        },{
-            returnDocument:"after"
+        }, {
+            returnDocument: "after"
         });
-//나중에 findOneAndUpdate 써서 answer업데이트하기
+        //나중에 findOneAndUpdate 써서 answer업데이트하기
 
-if(updateProduct){
-    return resp.status(200).json({ result: true, updateProduct:updateProduct });
-}
+        console.log(updateProduct)
+        if (updateProduct) {
+            return resp.status(200).json({ result: true, updateProduct: updateProduct });
+        }
         resp.status(401).json({ result: false });
 
     } catch (e) {
