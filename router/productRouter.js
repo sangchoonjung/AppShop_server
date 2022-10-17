@@ -1,4 +1,5 @@
 const express = require('express');
+const account = require('../model/account');
 const { emit } = require('../model/product');
 const Product = require('../model/product');
 
@@ -100,7 +101,40 @@ router.post("/requestProductList", async (req, resp) => {
 });
 //pending 수량 수정
 router.post("/requestProductFix", async (req, resp) => {
+
+
+    
     try {
+        console.log(req.body.id)
+        const data = await account.findOne({ id: req.body.id });
+        // console.log(data)
+        const origin  = data.productPendingItem.map(e=>{if(e.key!==req.body.productId){
+            return e
+        }})
+        console.log(origin)
+        let newData = [...origin, { ...req.body }];
+        const response = await Account.findOneAndUpdate({
+            id: req.body.id
+        }, {
+            productPendingItem: newData
+        }, {
+            returnDocument: "after"
+        });
+        // console.log(response.productPendingItem)
+        resp.status(200).json({ result: true, message: response.productPendingItem });
+    }
+    catch (e) {
+        console.log(e.message);
+        resp.status(401).json({ result: false });
+    }
+
+
+    /*
+    try {
+
+
+
+        
         const itemfix = req.body.list;
         console.log(itemfix)
         const itemId = itemfix.map(e => { return e.productId })
@@ -120,7 +154,7 @@ router.post("/requestProductFix", async (req, resp) => {
         resp.status(200).json({ result: true, message: sortedValue })
     } catch (e) {
         console.log(e.message)
-    }
+    }*/
 });
 
 

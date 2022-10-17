@@ -4,6 +4,8 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const morgan = require("morgan");
 
+const path = require("path")
+
 const app = express();
 
 const accountRouter = require("./router/accountRouter");
@@ -24,7 +26,8 @@ app.use("/api/account", accountRouter);
 app.use("/api/product", productRouter);
 app.use("/api/userInfo", userInfoRouter)
 
+app.use(express.static(path.join(__dirname, "static")));
 
-app.listen(8081,()=>{
+app.listen(8080,()=>{
     console.log("PERFUME SERVER START");
 });
