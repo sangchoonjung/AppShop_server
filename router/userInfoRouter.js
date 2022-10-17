@@ -52,7 +52,7 @@ router.post("/requestReview", async (req, resp) => {
         if (response) {
             const updateBefore = await Account.findOne({ id: data[2][1] }).select("completeReview").lean()
             console.log(updateBefore.completeReview, "updateBefore")
-
+        }
         // console.log(update.review)
 
         if (updateProduct) {
