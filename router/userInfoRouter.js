@@ -71,6 +71,7 @@ router.post("/requestReview", upload.single("image"), async (req, resp) => {
 
         if (updateProduct) {
             const updateBefore = await Account.findOne({ id: uid }).select("completeReview").lean()
+
             const updateAfter = await Account.findOneAndUpdate({ id: uid }, {
                 completeReview: [...updateBefore?.completeReview, productId]
             }, {
@@ -78,6 +79,7 @@ router.post("/requestReview", upload.single("image"), async (req, resp) => {
             })
             return resp.status(200).json({ result: true, message: updateAfter, updateProduct: updateProduct });
         }
+        console.log(updateAfter.completeReview, "updateAfter")
         resp.status(401).json({ result: false });
     } catch (e) {
         console.log(e.message);
