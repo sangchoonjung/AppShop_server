@@ -50,6 +50,7 @@ router.post("/requestReview", upload.single("image"), async (req, resp) => {
 
     const { uid } = req.body
     const { productId } = req.body
+    const { completeList } = req.body
     try {
         const origin = await Product.findOne({ key: productId }).select("review").lean()
         console.log(origin)
@@ -77,7 +78,21 @@ router.post("/requestReview", upload.single("image"), async (req, resp) => {
             }, {
                 returnDocument: "after"
             })
-            return resp.status(200).json({ result: true, message: updateAfter, updateProduct: updateProduct });
+
+
+            const itemId = completeList.map(e => { return e.productId })
+            console.log(completeList)
+            const data = await Product.find({ key: { $in: itemId } }).lean();
+
+
+            const sortedValue = data.map(e => {
+                const idx = completeList.findIndex(elm => elm.productId === e.key)
+                return { ...e, date: completeList[idx].date, unit: completeList[idx].unit, price: requestSearchItem[idx].price, type: "complete" }
+            }
+            ).sort((a, b) => a.date - b.date)
+
+            console.log(sortedValue);
+            return resp.status(200).json({ result: true, message: updateAfter, updateProduct: sortedValue });
         }
         console.log(updateAfter.completeReview, "updateAfter")
         resp.status(401).json({ result: false });
