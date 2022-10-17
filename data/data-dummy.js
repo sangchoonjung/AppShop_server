@@ -25,7 +25,8 @@
         "detailImage": "https://cdn.imweb.me/upload/S201806045b149b8deb819/7f598e902b3fa.jpg",
         "review": [],
         "QnA": [],
-
+        "pendingAmount": 0,
+        "saleFee": ""
     },
     {
         "key": "3",
@@ -38,6 +39,8 @@
         "detailImage": "https://cdn.imweb.me/upload/S201806045b149b8deb819/76ea8adeb0e44.jpg",
         "review": [],
         "QnA": [],
+        "pendingAmount": 0,
+        "saleFee": ""
     },
     {
         "key": "4",
@@ -50,6 +53,8 @@
         "detailImage": "https://cdn.imweb.me/upload/S201806045b149b8deb819/6eed60fee06cf.jpg",
         "review": [],
         "QnA": [],
+        "pendingAmount": 0,
+        "saleFee": ""
     },
     {
         "key": "5",
@@ -62,6 +67,8 @@
         "detailImage": "https://cdn.imweb.me/upload/S201806045b149b8deb819/214e62e1d8fb6.jpg",
         "review": [],
         "QnA": [],
+        "pendingAmount": 0,
+        "saleFee": ""
     },
     {
         "key": "6",
@@ -74,6 +81,8 @@
         "detailImage": "https://cdn.imweb.me/upload/S201806045b149b8deb819/2fa46ada6a2c1.jpg",
         "review": [],
         "QnA": [],
+        "pendingAmount": 0,
+        "saleFee": ""
     },
     {
         "key": "7",
@@ -86,6 +95,8 @@
         "detailImage": "https://cdn.imweb.me/upload/S201806045b149b8deb819/0e602ab4ec836.jpg",
         "review": [],
         "QnA": [],
+        "pendingAmount": 0,
+        "saleFee": ""
     },
     {
         "key": "8",
@@ -98,6 +109,8 @@
         "detailImage": "https://cdn.imweb.me/upload/S201806045b149b8deb819/482705629c71b.jpg",
         "review": [],
         "QnA": [],
+        "pendingAmount": 0,
+        "saleFee": ""
     },
     {
         "key": "9",
@@ -110,6 +123,8 @@
         "detailImage": "https://cdn.imweb.me/upload/S201806045b149b8deb819/26c72534c218d.jpg",
         "review": [],
         "QnA": [],
+        "pendingAmount": 0,
+        "saleFee": ""
     },
     {
         "key": "10",
@@ -122,6 +137,8 @@
         "detailImage": "https://cdn.imweb.me/upload/S201806045b149b8deb819/73ef774755757.jpg",
         "review": [],
         "QnA": [],
+        "pendingAmount": 0,
+        "saleFee": ""
     },
     {
         "key": "11",
@@ -134,6 +151,8 @@
         "detailImage": "https://cdn.imweb.me/upload/S201806045b149b8deb819/8fb40e03f368a.jpg",
         "review": [],
         "QnA": [],
+        "pendingAmount": 0,
+        "saleFee": ""
     },
     {
         "key": "12",
@@ -146,6 +165,8 @@
         "detailImage": "https://cdn.imweb.me/upload/S201806045b149b8deb819/e7387864abdd3.jpg",
         "review": [],
         "QnA": [],
+        "pendingAmount": 0,
+        "saleFee": ""
     },
     {
         "key": "13",
@@ -158,6 +179,8 @@
         "detailImage": "https://cdn.imweb.me/upload/S201806045b149b8deb819/52f32bd11049a.jpg",
         "review": [],
         "QnA": [],
+        "pendingAmount": 0,
+        "saleFee": ""
     },
     {
         "key": "14",
@@ -170,6 +193,8 @@
         "detailImage": "https://cdn.imweb.me/upload/S201806045b149b8deb819/5c5f6a2d1ba76.jpg",
         "review": [],
         "QnA": [],
+        "pendingAmount": 0,
+        "saleFee": ""
     },
     {
         "key": "15",
@@ -182,5 +207,7 @@
         "detailImage": "https://cdn.imweb.me/upload/S201806045b149b8deb819/418050f3dbc97.jpg",
         "review": [],
         "QnA": [],
+        "pendingAmount": 0,
+        "saleFee": ""
     },
 ]

@@ -1,7 +1,7 @@
 const express = require('express');
 const { emit } = require('../model/product');
 const Product = require('../model/product');
-
+const Review = require('../model/review');
 const router = express.Router();
 
 // 전체 상품 읽어오기
@@ -106,6 +106,18 @@ router.post("/requestProductListComplete", async (req, resp) => {
     }
 })
 
+//리뷰 가져오기
+router.post("/requestProductReview", async (req, resp) => {
+    try {
+        const id = req.body.productId;
+        const response = await Product.findOne({ key: req.body.productId }).select('review').lean();
+        const review = response?.review
+        console.log(response);
+        resp.status(200).json({ result: true, message: review });
+    } catch (e) {
+        console.log(e.message)
+    }
+})
 
 router.post("/requestQnaAdd", async (req, resp) => {
     try {
