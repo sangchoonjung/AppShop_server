@@ -136,7 +136,7 @@ router.post("/updateAccount", async (req, resp) => {
                 , { returnDocument: "after" })
             resp.status(200).json({ result: true, data: response });
         } else {
-            resp.status(200).json({ message: "Error", result: false })
+            resp.status(401).json({ message: "Error", result: false })
         }
     }
     catch (e) {
