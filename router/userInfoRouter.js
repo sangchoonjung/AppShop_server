@@ -79,7 +79,6 @@ router.post("/requestReview", upload.single("image"), async (req, resp) => {
                 returnDocument: "after"
             })
 
-
             const itemId = completeList.map(e => { return e.productId })
             console.log(completeList)
             const data = await Product.find({ key: { $in: itemId } }).lean();
