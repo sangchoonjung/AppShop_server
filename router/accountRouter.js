@@ -6,12 +6,13 @@ const router = express.Router();
 
 //로그인하기
 router.post("/login", async (req, resp) => {
-    console.log(req.body);
+    console.log(req.body, "sssssssss");
     try {
-        if (req.body.id && req.body.passWord) {
+        if (req.body.email && req.body.passWord) {
             let auth = false;
-            const data = await Account.findOne({ id: req.body.id });
+            const data = await Account.findOne({ email: req.body.email });
             data ? auth = await bcrypt.check(req.body.passWord, data.passWord) : auth = false;
+            console.log(auth)
             if (auth) {
                 const token = jwt.sign({ email: data.email }, process.env.SECRET_KEY, { expiresIn: 60 * 60 * 12 });
                 resp.status(200).json({ result: true, message: data, token });
@@ -27,7 +28,7 @@ router.post("/login", async (req, resp) => {
 const chkEMail = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
 //계정등록
 router.post("/register", async (req, resp) => {
-    console.log(req.body, "체크");
+    // console.log(req.body, "체크");
     try {
         if (req.body.email && chkEMail.test(req.body.email)) {
             const hash = await bcrypt.hash(req.body.passWord);
