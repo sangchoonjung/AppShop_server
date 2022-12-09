@@ -12,8 +12,9 @@ type seller = {
   MadeIn: string; //상품생산국  / 인풋
   ProductQuantity: number; //상품 수량 /인풋
   Description: string; //상품 상세설명 / 인풋
+  // ImageSub1: SKU 기준으로 조인해서 연결하기 (타이틀 이미지 서브)              _id
+  // ImageSub2: SKU 기준으로 조인해서 연결하기 (타이틀 이미지 서브)              _id
 
-  // ImageSub: SKU 기준으로 조인해서 연결하기 (타이틀 이미지 서브)              _id
   // ImageDetail : SKU 기준으로 조인해서 연결하기 (상세설명 이미지 서브)        _id
   // QnA: []; : SKU 기준으로 조인해서 연결하기 (질문답변리스트)           _id
   review: [
