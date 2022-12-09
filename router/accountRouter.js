@@ -27,19 +27,19 @@ router.post("/login", async (req, resp) => {
 const chkEMail = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
 //계정등록
 router.post("/register", async (req, resp) => {
-    console.log(req.body);
+    console.log(req.body, "체크");
     try {
         if (req.body.email && chkEMail.test(req.body.email)) {
-        const hash = await bcrypt.hash(req.body.passWord);
-        console.log(hash)
-        const response = await Account.create({ ...req.body, passWord: hash });
-        console.log(response)
-        resp.status(201).json({ result: true, message: response })
-        }else{
-        resp.json({ result: false, message: "register failed, Non E-mail." });
+            const hash = await bcrypt.hash(req.body.passWord);
+            // console.log(hash)
+            const response = await Account.create({ ...req.body, passWord: hash });
+            // console.log(response)
+            resp.status(201).json({ result: true, message: response })
+        } else {
+            resp.status(401).json({ result: false, message: "register failed, Non E-mail." });
         }
     } catch (e) {
-        console.log(e.message, "error")
+        // console.log(e.message, "error")
         if (e.message.includes("email")) {
             return resp.status(401).json({ result: false, message: "중복된 이메일" });
         }
@@ -49,9 +49,10 @@ router.post("/register", async (req, resp) => {
 
 router.post("/idCheck", async (req, resp) => {
     //아이디체크
-    console.log(req.body.id)
+    console.log(req.body.email)
     try {
-        const response = await Account.findOne({ id: req.body.id })
+        const response = await Account.findOne({ email: req.body.email })
+        console.log(response, "ssssssssssss")
         if (response === null) {
             //아이디가 없음(null)이면 result true
             resp.status(200).json({ result: true })
@@ -91,13 +92,13 @@ router.post("/resetPassWord", async (req, resp) => {
         if (!response) {
             throw new Error("idNull")
         }
-        if(response?.question===req.body?.question,response?.answer===req.body?.answer){
+        if (response?.question === req.body?.question, response?.answer === req.body?.answer) {
             console.log("일치")
             const hash = await bcrypt.hash(req.body.passWord)
-            const rst = await Account.findOneAndUpdate({id:req.body.id},{
-                passWord :hash
-            },{returnDocument:"after"});
-            return resp.status(200).json({result:true,message:rst});
+            const rst = await Account.findOneAndUpdate({ id: req.body.id }, {
+                passWord: hash
+            }, { returnDocument: "after" });
+            return resp.status(200).json({ result: true, message: rst });
         }
         resp.status(200).json({ result: false })
 
