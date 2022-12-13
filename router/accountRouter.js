@@ -17,7 +17,7 @@ router.post("/login", async (req, resp) => {
 
       if (auth) {
         const token = jwt.sign({ email: data.email }, process.env.SECRET_KEY, {
-          expiresIn: 60 * 60 * 12,
+          expiresIn: "7d",
         });
         // console.log(token);
         resp.status(200).json({ result: true, message: data, token });
@@ -102,7 +102,7 @@ router.post("/resetPassWord", async (req, resp) => {
     }
     if (
       (response?.question === req.body?.question,
-      response?.answer === req.body?.answer)
+        response?.answer === req.body?.answer)
     ) {
       console.log("일치");
       const hash = await bcrypt.hash(req.body.passWord);

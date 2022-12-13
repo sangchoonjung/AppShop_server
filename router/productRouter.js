@@ -1,9 +1,38 @@
 const express = require('express');
 const account = require('../model/account');
-const { emit } = require('../model/product');
 const Product = require('../model/product');
-
 const router = express.Router();
+const jwt = require('jsonwebtoken');
+
+// 셀러가 상품생성하기 
+router.post("/createProduct", async (req, resp) => {
+    console.log(req.body);
+    const item = req.body;
+    const token = req.headers['x-access-token'];
+    if (!token) {
+        return resp.status(403).json({
+            success: false,
+            message: 'not logged in'
+        });
+    }
+
+    const auth = jwt.verify(token, process.env.SECRET_KEY,
+        function (err, decoded) {
+            console.log(err) // 유효하지 않은 토큰
+            console.log(decoded) // 유효한 토큰, 유저 정보 Object 반환
+        })
+    console.log(auth);
+
+    try {
+        const response = await Product.create(item);
+        resp.status(200).json({ result: true, message: response });
+
+    } catch {
+        resp.status(401).json({ result: false });
+    }
+})
+
+
 
 // 전체 상품 읽어오기
 router.post("/allProductList", async (req, resp) => {
@@ -19,6 +48,7 @@ router.post("/allProductList", async (req, resp) => {
 
 
 });
+
 
 //서치바 이용한 상품 읽어오기
 router.post("/searchProductList", async (req, resp) => {
@@ -81,13 +111,13 @@ router.post("/requestProductList", async (req, resp) => {
         const requestSearchItem = req.body.list;
         console.log(requestSearchItem)
         const itemId = requestSearchItem.map(e => { return e.productId })
-        console.log(itemId,"check 1 !!!!!!!!!!!!!!!!")
+        console.log(itemId, "check 1 !!!!!!!!!!!!!!!!")
         const data = await Product.find({ key: { $in: itemId } }).lean();
         // console.log(data)
         // console.log(req.body.type)
         const sortedValue = data.map(e => {
             const idx = requestSearchItem.findIndex(elm => elm.productId === e.key)
-            console.log(idx,"sangchoon check!!!!!!!!!!!!!")
+            console.log(idx, "sangchoon check!!!!!!!!!!!!!")
             return { ...e, date: requestSearchItem[idx].date, unit: requestSearchItem[idx].unit, price: requestSearchItem[idx].price, type: req.body.type }
         }
         ).sort((a, b) => a.date - b.date)
@@ -103,14 +133,16 @@ router.post("/requestProductList", async (req, resp) => {
 router.post("/requestProductFix", async (req, resp) => {
 
 
-    
+
     try {
         console.log(req.body.id)
         const data = await account.findOne({ id: req.body.id });
         // console.log(data)
-        const origin  = data.productPendingItem.map(e=>{if(e.key!==req.body.productId){
-            return e
-        }})
+        const origin = data.productPendingItem.map(e => {
+            if (e.key !== req.body.productId) {
+                return e
+            }
+        })
         console.log(origin)
         let newData = [...origin, { ...req.body }];
         const response = await Account.findOneAndUpdate({
@@ -159,7 +191,7 @@ router.post("/requestProductFix", async (req, resp) => {
 
 
 //complete
-router.post("/requestProductListComplete",async(req,resp)=>{
+router.post("/requestProductListComplete", async (req, resp) => {
     try {
         const requestSearchItem = req.body.list;
         console.log(requestSearchItem)
@@ -200,7 +232,7 @@ router.post("/requestQnaAdd", async (req, resp) => {
         console.log(req.body)
         const { qna, productId, userId } = req.body
 
-        if (!qna||!productId||!userId) {
+        if (!qna || !productId || !userId) {
             return resp.status(401).json({ result: false });
         }
         const origin = await Product.findOne({ key: productId }).select("QnA").lean()
