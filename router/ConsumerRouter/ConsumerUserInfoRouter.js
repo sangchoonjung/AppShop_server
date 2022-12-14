@@ -1,6 +1,6 @@
 const express = require('express');
-const Product = require('../model/product');
-const Account = require("../model/account");
+const Product = require('../../model/commonModel/Product');
+const Account = require("../ConsumerRouter/ConsumerAccountRouter");
 const router = express.Router();
 const path = require("path");
 

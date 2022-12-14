@@ -1,10 +1,30 @@
 const express = require('express');
-const account = require('../model/account');
-const { emit } = require('../model/product');
-const Product = require('../model/product');
-
+const ConsumerAccount = require('../../model/ConsumerModel/ConsumerAccount');
+const Product = require('../../model/commonModel/Product');
 const router = express.Router();
 
+//판매자 페이지============================================================
+// 판매자가 올린 상품 읽어오기
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// 소비자 페이지===========================================================
 // 전체 상품 읽어오기
 router.post("/allProductList", async (req, resp) => {
     console.log(req.body);
@@ -81,13 +101,13 @@ router.post("/requestProductList", async (req, resp) => {
         const requestSearchItem = req.body.list;
         console.log(requestSearchItem)
         const itemId = requestSearchItem.map(e => { return e.productId })
-        console.log(itemId,"check 1 !!!!!!!!!!!!!!!!")
+        console.log(itemId, "check 1 !!!!!!!!!!!!!!!!")
         const data = await Product.find({ key: { $in: itemId } }).lean();
         // console.log(data)
         // console.log(req.body.type)
         const sortedValue = data.map(e => {
             const idx = requestSearchItem.findIndex(elm => elm.productId === e.key)
-            console.log(idx,"sangchoon check!!!!!!!!!!!!!")
+            console.log(idx, "sangchoon check!!!!!!!!!!!!!")
             return { ...e, date: requestSearchItem[idx].date, unit: requestSearchItem[idx].unit, price: requestSearchItem[idx].price, type: req.body.type }
         }
         ).sort((a, b) => a.date - b.date)
@@ -103,17 +123,19 @@ router.post("/requestProductList", async (req, resp) => {
 router.post("/requestProductFix", async (req, resp) => {
 
 
-    
+
     try {
         console.log(req.body.id)
-        const data = await account.findOne({ id: req.body.id });
+        const data = await ConsumerAccount.findOne({ id: req.body.id });
         // console.log(data)
-        const origin  = data.productPendingItem.map(e=>{if(e.key!==req.body.productId){
-            return e
-        }})
+        const origin = data.productPendingItem.map(e => {
+            if (e.key !== req.body.productId) {
+                return e
+            }
+        })
         console.log(origin)
         let newData = [...origin, { ...req.body }];
-        const response = await Account.findOneAndUpdate({
+        const response = await ConsumerAccount.findOneAndUpdate({
             id: req.body.id
         }, {
             productPendingItem: newData
@@ -159,7 +181,7 @@ router.post("/requestProductFix", async (req, resp) => {
 
 
 //complete
-router.post("/requestProductListComplete",async(req,resp)=>{
+router.post("/requestProductListComplete", async (req, resp) => {
     try {
         const requestSearchItem = req.body.list;
         console.log(requestSearchItem)
@@ -200,7 +222,7 @@ router.post("/requestQnaAdd", async (req, resp) => {
         console.log(req.body)
         const { qna, productId, userId } = req.body
 
-        if (!qna||!productId||!userId) {
+        if (!qna || !productId || !userId) {
             return resp.status(401).json({ result: false });
         }
         const origin = await Product.findOne({ key: productId }).select("QnA").lean()
