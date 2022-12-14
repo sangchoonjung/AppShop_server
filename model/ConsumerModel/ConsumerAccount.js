@@ -12,4 +12,4 @@ const accountSchema = new mongoose.Schema({
     completeReview: { type: Array, default: [] }
 
 });
-module.exports = mongoose.model("account", accountSchema);
+module.exports = mongoose.model("ConsumerAccount", accountSchema);

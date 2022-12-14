@@ -1,16 +1,16 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
-const Account = require("../model/account");
-const bcrypt = require("../bcrypt/bcrypt.js");
+const ConsumerAccount = require("../../model/ConsumerModel/ConsumerAccount");
+const bcrypt = require("../../bcrypt/bcrypt.js");
 const router = express.Router();
 
 //로그인하기
-router.post("/login", async (req, resp) => {
+router.post("/ConsumerLogin", async (req, resp) => {
   console.log(req.body, "sssssssss");
   try {
     if (req.body.email && req.body.passWord) {
       let auth = false;
-      const data = await Account.findOne({ email: req.body.email });
+      const data = await ConsumerAccount.findOne({ email: req.body.email });
       data
         ? (auth = await bcrypt.check(req.body.passWord, data.passWord))
         : (auth = false);
@@ -33,13 +33,13 @@ router.post("/login", async (req, resp) => {
 const chkEMail =
   /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
 //계정등록
-router.post("/register", async (req, resp) => {
+router.post("/ConsumerRegister", async (req, resp) => {
   // console.log(req.body, "체크");
   try {
     if (req.body.email && chkEMail.test(req.body.email)) {
       const hash = await bcrypt.hash(req.body.passWord);
       // console.log(hash)
-      const response = await Account.create({ ...req.body, passWord: hash });
+      const response = await ConsumerAccount.create({ ...req.body, passWord: hash });
       // console.log(response)
       resp.status(201).json({ result: true, message: response });
     } else {
@@ -56,11 +56,11 @@ router.post("/register", async (req, resp) => {
   }
 });
 
-router.post("/idCheck", async (req, resp) => {
+router.post("/ConsumerIdCheck", async (req, resp) => {
   //아이디체크
   console.log(req.body.email);
   try {
-    const response = await Account.findOne({ email: req.body.email });
+    const response = await ConsumerAccount.findOne({ email: req.body.email });
     console.log(response, "ssssssssssss");
     if (response === null) {
       //아이디가 없음(null)이면 result true
@@ -75,10 +75,10 @@ router.post("/idCheck", async (req, resp) => {
 });
 
 //아이디 찾기
-router.post("/findId", async (req, resp) => {
+router.post("/ConsumerFindId", async (req, resp) => {
   console.log(req.body);
   try {
-    const response = await Account.findOne({ email: req.body.email });
+    const response = await ConsumerAccount.findOne({ email: req.body.email });
     console.log(response);
     if (response) {
       resp.status(200).json({ result: true, id: response.id });
@@ -92,21 +92,21 @@ router.post("/findId", async (req, resp) => {
 });
 
 //비밀번호 재설정
-router.post("/resetPassWord", async (req, resp) => {
+router.post("/ConsumerResetPassWord", async (req, resp) => {
   try {
     console.log(req.body);
-    const response = await Account.findOne({ id: req.body.id });
+    const response = await ConsumerAccount.findOne({ id: req.body.id });
     console.log(response, "response");
     if (!response) {
       throw new Error("idNull");
     }
     if (
       (response?.question === req.body?.question,
-      response?.answer === req.body?.answer)
+        response?.answer === req.body?.answer)
     ) {
       console.log("일치");
       const hash = await bcrypt.hash(req.body.passWord);
-      const rst = await Account.findOneAndUpdate(
+      const rst = await ConsumerAccount.findOneAndUpdate(
         { id: req.body.id },
         {
           passWord: hash,
@@ -126,14 +126,14 @@ router.post("/resetPassWord", async (req, resp) => {
 });
 
 //개인정보 변경
-router.post("/updateAccount", async (req, resp) => {
+router.post("/ConsumerUpdateConsumerAccount", async (req, resp) => {
   try {
     if (!req.body.passWordNow) {
       return;
     }
     console.log(req.body);
     let auth;
-    const data = await Account.findOne({ id: req.body.id });
+    const data = await ConsumerAccount.findOne({ id: req.body.id });
     data
       ? (auth = await bcrypt.check(req.body.passWordNow, data.passWord))
       : (auth = false);
@@ -145,7 +145,7 @@ router.post("/updateAccount", async (req, resp) => {
       } else {
         newData = { ...req.body };
       }
-      const response = await Account.findOneAndUpdate(
+      const response = await ConsumerAccount.findOneAndUpdate(
         {
           id: req.body.id,
         },
@@ -161,11 +161,11 @@ router.post("/updateAccount", async (req, resp) => {
   }
 });
 
-router.post("/pendingRequest", async (req, resp) => {
+router.post("/ConsumerPendingRequest", async (req, resp) => {
   try {
-    const data = await Account.findOne({ id: req.body.id });
+    const data = await ConsumerAccount.findOne({ id: req.body.id });
     let newData = [...data.productPendingItem, { ...req.body }];
-    const response = await Account.findOneAndUpdate(
+    const response = await ConsumerAccount.findOneAndUpdate(
       {
         id: req.body.id,
       },

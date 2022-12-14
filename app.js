@@ -8,12 +8,13 @@ const path = require("path")
 
 const app = express();
 
-const accountRouter = require("./router/accountRouter");
-const productRouter = require("./router/productRouter");
-const userInfoRouter = require("./router/userInfoRouter");
+const ConsumerAccountRouter = require("./router/ConsumerRouter/ConsumerAccountRouter");
+const ProductRouter = require("./router/commonRouter/ProductRouter");
+const ConsumerUserInfoRouter = require("./router/ConsumerRouter/ConsumerUserInfoRouter");
+const SellerAccountRouter = require("./router/SellerRouter/SellerAccountRouter");
 
 dotenv.config();
-mongoose.connect(process.env.MONGODB_URI,{dbName:"perfume"});
+mongoose.connect(process.env.MONGODB_URI, { dbName: "AppShop" });
 
 //몽고 설정
 
@@ -22,12 +23,14 @@ app.use(cors());
 app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: true }));
 
-app.use("/api/account", accountRouter);
-app.use("/api/product", productRouter);
-app.use("/api/userInfo", userInfoRouter)
+app.use("/api/Account", ConsumerAccountRouter);
+app.use("/api/Account", SellerAccountRouter);
+
+app.use("/api/product", ProductRouter);
+app.use("/api/userInfo", ConsumerUserInfoRouter)
 
 app.use(express.static(path.join(__dirname, "static")));
 
-app.listen(8080,()=>{
-    console.log("PERFUME SERVER START");
+app.listen(8080, () => {
+    console.log("AppShop SERVER START");
 });
