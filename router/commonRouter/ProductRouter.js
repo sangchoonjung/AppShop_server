@@ -2,15 +2,66 @@ const express = require('express');
 const ConsumerAccount = require('../../model/ConsumerModel/ConsumerAccount');
 const Product = require('../../model/commonModel/Product');
 const router = express.Router();
+const jwt = require("jsonwebtoken");
+const { initializeApp } = require("firebase/app")
+const formidable = require("formidable");
+
+const firebaseConfig = {
+    apiKey: "AIzaSyBMe-x9IWvOnFLWjF1NpOlVctYmdiWR2bc",
+    authDomain: "app-shop-77741.firebaseapp.com",
+    projectId: "app-shop-77741",
+    storageBucket: "app-shop-77741.appspot.com",
+    messagingSenderId: "122810812732",
+    appId: "1:122810812732:web:ffab2b4a067b35d8893639",
+    measurementId: "G-4DQYR0W1X6"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+
 
 //판매자 페이지============================================================
-// 판매자가 올린 상품 읽어오기
+// 판매자 상품 올리기
+
+router.post("/addProduct", async (req, res) => {
+    // console.log(req.body);
+    const form = formidable({ multiples: true });
+    const result =
+        await new Promise((resolve, rejsct) => {
+            form.parse(req, (err, fields, files) => {
+                resolve({
+                    input: fields.input,
+                    mainFile: files.mainFile
+                });
+            });
+        });
+    console.log(result);
+    // const reqToken = req.headers["x-access-token"] || req.body.token;
+
+    // if (!reqToken) {
+    //     return req.status(401).json({ message: "token error" });
+    // }
+
+    // const p = new Promise((resolve, reject) => {
+    //     jwt.verify(reqToken, process.env.SECRET_KEY, (err, decoded) => {
+    //         if (err) { reject(err) }
+    //         else {
+    //             resolve(decoded);
+    //         }
+    //     })
+    // });
+    // console.log(p);
+    // try {
+    //     const decoded = jwt.verify(reqToken, process.env.SECRET_KEY);
+    // } catch (err) {
+    //     console.log(err)
+    // }
+
+    // const response = await Product.create(req.body);
+    // res.status(200).json({ result: true, message: response });
 
 
-
-
-
-
+})
 
 
 
