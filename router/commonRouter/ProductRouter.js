@@ -5,6 +5,11 @@ const router = express.Router();
 const jwt = require("jsonwebtoken");
 const { initializeApp } = require("firebase/app")
 const formidable = require("formidable");
+const fs = require("fs");
+const { ref, getStorage, getDownloadURL, uploadBytes } = require("firebase/storage");
+const { uuid } = require('uuidv4');
+const { v4 } = require('uuid');
+
 
 const firebaseConfig = {
     apiKey: "AIzaSyBMe-x9IWvOnFLWjF1NpOlVctYmdiWR2bc",
@@ -21,45 +26,67 @@ const app = initializeApp(firebaseConfig);
 
 
 //판매자 페이지============================================================
-// 판매자 상품 올리기
+// 판매자 상품 올리기 api
 
 router.post("/addProduct", async (req, res) => {
-    // console.log(req.body);
+    const reqToken = req.headers["x-access-token"] || req.body.token;
+    if (!reqToken) {
+        return req.status(401).json({ message: "token error" });
+    }
+
     const form = formidable({ multiples: true });
     const result =
         await new Promise((resolve, rejsct) => {
             form.parse(req, (err, fields, files) => {
+                // console.log(req, "11111111111")
+                // console.log(fields, "222222222222")
+                // console.log(files, "3333333333")
                 resolve({
                     input: fields.input,
-                    mainFile: files.mainFile
+                    mainImage: files.mainImage
                 });
             });
         });
-    console.log(result);
-    // const reqToken = req.headers["x-access-token"] || req.body.token;
+    // console.log("메인 이미지 정보", result.mainImage);
 
-    // if (!reqToken) {
-    //     return req.status(401).json({ message: "token error" });
-    // }
+    const storage = getStorage(app);
+    const dirRef = ref(storage, "mainImg/" + "userEmail");
+    const fileRef = ref(dirRef, result.mainImage.newFilename);
 
-    // const p = new Promise((resolve, reject) => {
-    //     jwt.verify(reqToken, process.env.SECRET_KEY, (err, decoded) => {
-    //         if (err) { reject(err) }
-    //         else {
-    //             resolve(decoded);
-    //         }
-    //     })
-    // });
-    // console.log(p);
-    // try {
-    //     const decoded = jwt.verify(reqToken, process.env.SECRET_KEY);
-    // } catch (err) {
-    //     console.log(err)
-    // }
+    const mainFile = fs.readFileSync(result.mainImage.filepath);
+    await uploadBytes(fileRef, mainFile, {
+        //타입지정
+        contentType: result.mainImage.mimetype,
+    });
+    const mainImg = await getDownloadURL(fileRef)
 
-    // const response = await Product.create(req.body);
-    // res.status(200).json({ result: true, message: response });
 
+
+    // console.log(result.input, "넘어온 데이타")
+    const getData = JSON.parse(result.input);
+    // console.log(jwt.verify(reqToken, process.env.SECRET_KEY), "토큰sssssssssssssssss")
+    const token = jwt.verify(reqToken, process.env.SECRET_KEY);
+
+
+    const putData = {
+        Name: getData.name,
+        Category: getData.category,
+        Price: Number(getData.price),
+        ProductQuantity: Number(getData.amount),
+        MadeIn: getData.country,
+        Description: getData.description,
+        Status: getData.status,
+        Available: getData.available,
+        Created: new Date(),
+        FeePerSold: Number(getData.price) * 0.1,
+        SKU: v4(),
+        Image: mainImg,
+        SellerId: token.email
+
+
+    }
+    const response = await Product.create(putData);
+    return res.status(200).json({ result: true, message: response });
 
 })
 

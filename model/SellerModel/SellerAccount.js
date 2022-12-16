@@ -1,7 +1,7 @@
 const { default: mongoose } = require("mongoose");
 
 const accountSchema = new mongoose.Schema({
-    email: { type: String, unique: true, required: true },
+    email: { type: String, required: true },
     passWord: String,
     phoneNumber: String,
     birth: String,
