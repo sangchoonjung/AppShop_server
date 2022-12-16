@@ -76,12 +76,16 @@ router.post("/addProduct", async (req, res) => {
         MadeIn: getData.country,
         Description: getData.description,
         Status: getData.status,
-        Available: getData.available,
+        // Available: getData.available,
         Created: new Date(),
         FeePerSold: Number(getData.price) * 0.1,
         SKU: v4(),
         Image: mainImg,
-        SellerId: token.email
+        SellerId: token.email,
+        // MinimumQuantity: Number(getData.),
+        FinalPrice: Number(getData.price),
+        // Deadline: Date,
+        // DiscountRate: string
 
 
     }
