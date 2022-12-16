@@ -73,6 +73,23 @@ router.post("/SellerIdCheck", async (req, resp) => {
     }
 });
 
+router.post("/valid", async (req, res) => {
+    console.log(req.body.token);
+
+    try {
+        jwt.verify(req.body.token, 'secret-key', (error, decoded) => {
+            if (error) {
+                console.log(`에러가 났습니다\n ${error}`);
+                return res.status(401).json({ result: false });
+            }
+            console.log(decoded);
+            return res.status(200).json({ result: true, message: decoded });
+        })
+    } catch (e) {
+        console.log(e);
+    }
+})
+
 
 
 module.exports = router;
