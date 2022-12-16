@@ -21,15 +21,15 @@ const productSchema = new mongoose.Schema({
     SKU: String, // 단위 프라이머리 키 uuid                     O
     Name: String, //상품명 / 인풋                              O
     Created: Date, // 등록일                                   O
-    Available: String, // 활성화 / 셀렉트                      O
+    // Available: String, // 활성화 / 셀렉트                      O
     FeePerSold: Number, // 수수료                             O
     Price: Number, // 가격 /인풋                               O
-    FinalPrice: Number,
+    FinalPrice: Number,                                      //O
     ProductQuantity: Number, //최대판매가능한 상품 수량 /인풋    O
-    MinimumQuantity: Number, //할인율을 적용하기위한 최소판매수량
+    MinimumQuantity: Number, //할인율을 적용하기위한 최소판매수량 O
     SoldQuantity: { type: Number, default: 0 },
-    Deadline: Date,
-    DiscountRate: String, //최대할인율
+    Deadline: Date,                                          // O
+    DiscountRate: String, //최대할인율                          //O
     Category: String, //상품 카테고리 /셀렉트                   O
     MadeIn: String, //상품생산국  / 인풋                        O
     Description: String, //상품 상세설명 / 인풋                 O
