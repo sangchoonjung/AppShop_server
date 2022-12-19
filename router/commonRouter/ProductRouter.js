@@ -33,6 +33,7 @@ router.post("/addProduct", async (req, res) => {
     if (!reqToken) {
         return req.status(401).json({ message: "token error" });
     }
+    const token = jwt.verify(reqToken, process.env.SECRET_KEY);
 
     const form = formidable({ multiples: true });
     const result =
@@ -43,29 +44,49 @@ router.post("/addProduct", async (req, res) => {
                 // console.log(files, "3333333333")
                 resolve({
                     input: fields.input,
-                    mainImage: files.mainImage
+                    mainImage: files.mainImage,
+                    subImage: files.subImage
                 });
             });
         });
     // console.log("메인 이미지 정보", result.mainImage);
 
     const storage = getStorage(app);
-    const dirRef = ref(storage, "mainImg/" + "userEmail");
+    const dirRef = ref(storage, "mainImg/" + token.email);
     const fileRef = ref(dirRef, result.mainImage.newFilename);
 
+    //메인이미지 스토리지 등록
     const mainFile = fs.readFileSync(result.mainImage.filepath);
+
+    await uploadBytes(fileRef, mainFile, {
+        //타입지정
+        contentType: result.mainImage.mimetype,
+    });
+
     await uploadBytes(fileRef, mainFile, {
         //타입지정
         contentType: result.mainImage.mimetype,
     });
     const mainImg = await getDownloadURL(fileRef)
 
+    //서브이미지 스토리지 등록
+    const subPhotoList = [];
+    for (let one of result.subImage) {
+        const fileRef = ref(dirRef, one.newFilename);
+        const file = fs.readFileSync(one.filepath);
+        await uploadBytes(fileRef, file, {
+            //타입지정
+            contentType: one.mimetype,
+        });
+        subPhotoList.push(await getDownloadURL(fileRef));
+    }
+    console.log(subPhotoList);
 
 
-    // console.log(result.input, "넘어온 데이타")
+    console.log(result.input, "넘어온 데이타")
     const getData = JSON.parse(result.input);
     // console.log(jwt.verify(reqToken, process.env.SECRET_KEY), "토큰sssssssssssssssss")
-    const token = jwt.verify(reqToken, process.env.SECRET_KEY);
+
 
 
     const putData = {
@@ -76,16 +97,17 @@ router.post("/addProduct", async (req, res) => {
         MadeIn: getData.country,
         Description: getData.description,
         Status: getData.status,
-        // Available: getData.available,
+        MinimumQuantity: Number(getData.minimumAmount),
+        Deadline: getData.deadline,
+        DiscountRate: getData.discountRate,
         Created: new Date(),
-        FeePerSold: Number(getData.price) * 0.1,
+        FeePerSold: Number(getData.price) * 0.1, //수수료
         SKU: v4(),
         Image: mainImg,
         SellerId: token.email,
-        // MinimumQuantity: Number(getData.),
         FinalPrice: Number(getData.price),
-        // Deadline: Date,
-        // DiscountRate: string
+        SubImage: subPhotoList
+
 
 
     }
@@ -93,6 +115,21 @@ router.post("/addProduct", async (req, res) => {
     return res.status(200).json({ result: true, message: response });
 
 })
+
+//판매자 상품리스트 불러오기
+router.post("/getProductList", async (req, res) => {
+    const reqToken = req.headers["x-access-token"] || req.body.token;
+    console.log(reqToken, "토큰ㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴ");
+    if (!reqToken) {
+        return req.status(401).json({ message: "token error" });
+    }
+    const token = jwt.verify(reqToken, process.env.SECRET_KEY);
+
+    const response = await Product.find({ SellerId: token.email });
+
+    return res.status(200).json({ result: true, message: response });
+
+});
 
 
 
