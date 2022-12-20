@@ -8,15 +8,15 @@ const router = express.Router();
 router.post("/ConsumerLogin", async (req, resp) => {
   console.log(req.body, "sssssssss");
   try {
-    if (req.body.email && req.body.passWord) {
+    if (req.body.id && req.body.passWord) {
       let auth = false;
-      const data = await ConsumerAccount.findOne({ email: req.body.email });
+      const data = await ConsumerAccount.findOne({ id: req.body.id });
       data
         ? (auth = await bcrypt.check(req.body.passWord, data.passWord))
         : (auth = false);
 
       if (auth) {
-        const token = jwt.sign({ email: data.email }, process.env.SECRET_KEY, {
+        const token = jwt.sign({ id: data.id }, process.env.SECRET_KEY, {
           expiresIn: 60 * 60 * 12,
         });
         // console.log(token);
@@ -56,12 +56,12 @@ router.post("/ConsumerRegister", async (req, resp) => {
   }
 });
 
+//아이디체크
 router.post("/ConsumerIdCheck", async (req, resp) => {
-  //아이디체크
-  console.log(req.body.email);
+  console.log(req.body.id);
   try {
-    const response = await ConsumerAccount.findOne({ email: req.body.email });
-    console.log(response, "ssssssssssss");
+    const response = await ConsumerAccount.findOne({ id: req.body.id });
+    console.log(response, "아이디 찾기 확인!!");
     if (response === null) {
       //아이디가 없음(null)이면 result true
       resp.status(200).json({ result: true });
