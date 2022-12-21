@@ -101,7 +101,7 @@ router.post("/ConsumerResetPassWord", async (req, resp) => {
       throw new Error("idNull");
     }
     if (
-      (response?.question === req.body?.question,
+      (response?.question === req.body?.question &&
         response?.answer === req.body?.answer)
     ) {
       console.log("일치");
