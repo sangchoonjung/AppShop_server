@@ -89,6 +89,7 @@ router.post('/ConsumerRegister', async (req, resp) => {
     }
 });
 
+
 //아이디체크
 router.post('/ConsumerIdCheck', async (req, resp) => {
     console.log(req.body.id);
