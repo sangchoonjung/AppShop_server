@@ -6,11 +6,12 @@ const router = express.Router();
 
 //로그인하기
 router.post("/ConsumerLogin", async (req, resp) => {
-  console.log(req.body, "sssssssss");
+  console.log(req.body, "들어온 아이디 , 비번");
   try {
     if (req.body.id && req.body.passWord) {
       let auth = false;
       const data = await ConsumerAccount.findOne({ id: req.body.id });
+
       data
         ? (auth = await bcrypt.check(req.body.passWord, data.passWord))
         : (auth = false);
@@ -22,7 +23,7 @@ router.post("/ConsumerLogin", async (req, resp) => {
         // console.log(token);
         resp.status(200).json({ result: true, message: data, token });
       } else {
-        resp.json({ result: false });
+        resp.status(401).json({ result: false });
       }
     }
   } catch (e) {
@@ -56,7 +57,7 @@ router.post("/ConsumerRegister", async (req, resp) => {
   }
 });
 
-//아이디체크
+//아이디중복확인
 router.post("/ConsumerIdCheck", async (req, resp) => {
   console.log(req.body.id);
   try {

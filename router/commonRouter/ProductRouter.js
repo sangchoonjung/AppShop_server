@@ -143,7 +143,7 @@ router.post('/getProductList', async (req, res) => {
 });
 
 // 소비자 페이지===========================================================
-// 전체 상품 읽어오기
+// 전체 상품 읽어오기 (완)
 router.post('/allProductList', async (req, resp) => {
     console.log(req.body);
 
@@ -155,13 +155,13 @@ router.post('/allProductList', async (req, resp) => {
     }
 });
 
-//서치바 이용한 상품 읽어오기
+//키워드검색 상품 읽어오기 (완)
 router.post('/searchProductList', async (req, resp) => {
     const requestSearchItem = req.body.search;
     console.log(requestSearchItem);
     try {
         const data = await Product.find({
-            title: { $regex: String(requestSearchItem) },
+            Name: { $regex: String(requestSearchItem) },
         });
         resp.status(200).json({ result: true, message: data });
     } catch (e) {
@@ -170,12 +170,13 @@ router.post('/searchProductList', async (req, resp) => {
     }
 });
 
-//카테고리 선정을 통한 상품 읽어오기
+//카테고리 선정을 통한 상품 읽어오기 (완)
 router.post('/categoryProductList', async (req, resp) => {
     try {
         const requestSearchItem = req.body.category;
+        console.log(requestSearchItem, "카테고리");
         const data = await Product.find({
-            category: { $in: requestSearchItem },
+            Category: { $in: requestSearchItem },
         });
         resp.status(200).json({ result: true, message: data });
     } catch (e) {
@@ -234,7 +235,7 @@ router.post('/requestProductList', async (req, resp) => {
                 const idx = requestSearchItem.findIndex(
                     (elm) => elm.productId === e.key
                 );
-                console.log(idx, 'sangchoon check!!!!!!!!!!!!!');
+                // console.log(idx, 'sangchoon check!!!!!!!!!!!!!');
                 return {
                     ...e,
                     date: requestSearchItem[idx].date,

@@ -1,22 +1,23 @@
 const express = require('express');
 const Product = require('../../model/commonModel/Product');
-const Account = require("../ConsumerRouter/ConsumerAccountRouter");
+// const Account = require("../ConsumerRouter/ConsumerAccountRouter");
 const router = express.Router();
 const path = require("path");
 
 const fs = require("fs")
 const multer = require("multer");
+const ConsumerAccount = require('../../model/ConsumerModel/ConsumerAccount');
 
 // 찜 추가삭제
 router.post("/zzim", async (req, resp) => {
-    console.log(req.body);
+    // console.log(req.body, "ㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴ");
     try {
         const { user } = req.body;
         const value = req.body.zzimList;
         console.log(user, value)
-        const response = await Account.findOneAndUpdate({ id: user }, {
+        const response = await ConsumerAccount.findOneAndUpdate({ id: user }, {
             zzimList: value
-        })
+        }, { returnDocument: "after" })
         resp.status(200).json({ result: true, message: response });
     } catch (e) {
         console.log(e.message)
