@@ -1,17 +1,13 @@
-const { default: mongoose } = require("mongoose");
+const { default: mongoose } = require('mongoose');
 //_id 필요
-const QnASchema = new mongoose.Schema(
-    {
-        QuestionTitle: String,
-        QuestionContent: String,
-        QuestionConsumer: String,
-        AnswerContent: String,
-        AnswerSeller: String,
-        createdAt: Date
-    }
-);
-
-
+const QnASchema = new mongoose.Schema({
+    QuestionTitle: String,
+    QuestionContent: String,
+    QuestionConsumer: String,
+    AnswerContent: String,
+    AnswerSeller: String,
+    createdAt: Date,
+});
 
 const productSchema = new mongoose.Schema({
     SellerId: String, //판매자 아이디 유니크                    O
@@ -24,22 +20,24 @@ const productSchema = new mongoose.Schema({
     // Available: String, // 활성화 / 셀렉트                      O
     FeePerSold: Number, // 수수료                             O
     Price: Number, // 가격 /인풋                               O
-    FinalPrice: Number,                                      //O
+    FinalPrice: Number, //O
     ProductQuantity: Number, //최대판매가능한 상품 수량 /인풋    O
     MinimumQuantity: Number, //할인율을 적용하기위한 최소판매수량 O
     SoldQuantity: { type: Number, default: 0 },
-    Deadline: Date,                                          // O
+    Deadline: Date, // O
     DiscountRate: String, //최대할인율                          //O
     Category: String, //상품 카테고리 /셀렉트                   O
     MadeIn: String, //상품생산국  / 인풋                        O
     Description: String, //상품 상세설명 / 인풋                 O
-    Review: [{
-        ReviewTitle: String, //제목
-        ConsumerId: String,//소비자아이디
-        ReviewContent: String,//리뷰 내용
-        ReviewPhoto: [], //리뷰사진
-        createdAt: Date //등록일
-    }],
-    QnA: [QnASchema]
+    Review: [
+        {
+            ReviewTitle: String, //제목
+            ConsumerId: String, //소비자아이디
+            ReviewContent: String, //리뷰 내용
+            ReviewPhoto: [], //리뷰사진
+            createdAt: Date, //등록일
+        },
+    ],
+    QnA: [QnASchema],
 });
-module.exports = mongoose.model("Product", productSchema);
+module.exports = mongoose.model('Product', productSchema);

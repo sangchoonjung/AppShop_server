@@ -33,7 +33,7 @@ const app = initializeApp(firebaseConfig);
 router.post('/addProduct', async (req, res) => {
     const reqToken = req.headers['x-access-token'] || req.body.token;
     if (!reqToken) {
-        return req.status(401).json({ message: 'token error' });
+        return res.status(401).json({ message: 'token error' });
     }
     try {
         const token = jwt.verify(reqToken, process.env.SECRET_KEY);
@@ -197,7 +197,7 @@ router.post('/zzimProductList', async (req, resp) => {
         // console.log(itemId)
         const data = await Product.find({ key: { $in: itemId } }).lean();
         // console.log(data)
-
+        if (!data) return resp.status(200).json({ result: true, message: [] });
         const sortedValue = data
             .map((e) => {
                 const idx = requestSearchItem.findIndex(
@@ -222,18 +222,25 @@ router.post('/zzimProductList', async (req, resp) => {
 router.post('/requestProductList', async (req, resp) => {
     try {
         const requestSearchItem = req.body.list;
-        console.log(requestSearchItem);
+        if (!requestSearchItem)
+            return resp
+                .status(401)
+                .json({ message: '잘못된 펜딩 목록입니다.' });
         const itemId = requestSearchItem.map((e) => {
             return e.productId;
         });
-        console.log(itemId, 'check 1 !!!!!!!!!!!!!!!!');
-        const data = await Product.find({ key: { $in: itemId } }).lean();
-        // console.log(data)
+        // console.log(itemId, 'check 1 !!!!!!!!!!!!!!!!');
+        const data = await Product.find({ SKU: { $in: itemId } }).lean();
+        // console.log(data);
+        if (!data)
+            return resp
+                .status(200)
+                .json({ result: true, message: '잘못된 상품 정보입니다.' });
         // console.log(req.body.type)
         const sortedValue = data
             .map((e) => {
                 const idx = requestSearchItem.findIndex(
-                    (elm) => elm.productId === e.key
+                    (elm) => elm.productId === e.SKU
                 );
                 // console.log(idx, 'sangchoon check!!!!!!!!!!!!!');
                 return {
@@ -241,7 +248,7 @@ router.post('/requestProductList', async (req, resp) => {
                     date: requestSearchItem[idx].date,
                     unit: requestSearchItem[idx].unit,
                     price: requestSearchItem[idx].price,
-                    type: req.body.type,
+                    type: 'pending',
                 };
             })
             .sort((a, b) => a.date - b.date);
@@ -326,6 +333,7 @@ router.post('/requestProductListComplete', async (req, resp) => {
 
         const data = await Product.find({ key: { $in: itemId } }).lean();
         // console.log(data)
+        if (!data) return resp.status(200).json({ result: true, message: [] });
         console.log(req.body.type);
         const sortedValue = data
             .map((e) => {
