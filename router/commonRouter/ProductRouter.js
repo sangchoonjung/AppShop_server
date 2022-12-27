@@ -185,30 +185,39 @@ router.post('/categoryProductList', async (req, resp) => {
     }
 });
 
-//찜리스트에서 상품 불러오기
-router.post('/zzimProductList', async (req, resp) => {
-    const token = req.headers['x-access-token'];
-    if (!token) {
-        return resp.status(401).json({ message: 'token error' });
-    } else {
-        const tokenCheck = jwt.verify(token, process.env.SECRET_KEY);
-        console.log(tokenCheck);
 
-        try {
-            const { zzimList } = req.body;
-            //   console.log(zzimList);
-            const item = zzimList.map((one) => {
-                return one.itemSKU;
-            });
+//찜리스트에서 상품 불러오기 (완)
+router.post("/zzimProductList", async (req, resp) => {
+  const token = req.headers["x-access-token"];
+  if (!token) {
+    return resp.status(401).json({ message: "token error" });
+  } else {
+    const tokenCheck = jwt.verify(token, process.env.SECRET_KEY);
+    console.log(tokenCheck);
 
-            const data = await Product.find({ SKU: { $in: item } }).lean();
-            //   console.log(data, "찾은데이타");
-            return resp.status(200).json({ result: true, message: data });
-        } catch (e) {
-            return resp
-                .status(401)
-                .json({ result: false, message: '찜한 아이템 없음' });
-        }
+    const { zzimList } = req.body;
+    console.log(zzimList);
+
+    try {
+      const item = zzimList.map((one) => {
+        return one.itemSKU;
+      });
+
+      const data = await Product.find({ SKU: { $in: item } }).lean();
+      // const newData = data.map((one) => {
+      //   const idx = zzimList.findIndex((zzimListItem) => {
+      //     zzimListItem.itemSKU === one.SKU
+      //   }
+      //   )
+      //   return { ...one, UserPickedDate: zzimList[idx].date }
+      // })
+      // console.log(newData, "뉴데이타");
+
+      //   console.log(data, "찾은데이타");
+      return resp.status(200).json({ result: true, message: data });
+    } catch (e) {
+      return resp.status(401).json({ result: false, message: e });
+
     }
 });
 
@@ -254,41 +263,43 @@ router.post('/requestProductList', async (req, resp) => {
         console.log(e.message);
     }
 });
-//pending 수량 수정
-router.post('/requestProductFix', async (req, resp) => {
-    try {
-        console.log(req.body.id);
-        const data = await ConsumerAccount.findOne({ id: req.body.id });
-        // console.log(data)
-        const origin = data.productPendingItem.map((e) => {
-            if (e.key !== req.body.productId) {
-                return e;
-            }
-        });
-        console.log(origin);
-        let newData = [...origin, { ...req.body }];
-        const response = await ConsumerAccount.findOneAndUpdate(
-            {
-                id: req.body.id,
-            },
-            {
-                productPendingItem: newData,
-            },
-            {
-                returnDocument: 'after',
-            }
-        );
-        // console.log(response.productPendingItem)
-        resp.status(200).json({
-            result: true,
-            message: response.productPendingItem,
-        });
-    } catch (e) {
-        console.log(e.message);
-        resp.status(401).json({ result: false });
-    }
 
-    /*
+//pending 수량 수정 (사용안함)
+router.post("/requestProductFix", async (req, resp) => {
+  try {
+    console.log(req.body.id);
+    const data = await ConsumerAccount.findOne({ id: req.body.id });
+    // console.log(data)
+    const origin = data.productPendingItem.map((e) => {
+      if (e.key !== req.body.productId) {
+        return e;
+      }
+    });
+    console.log(origin);
+    let newData = [...origin, { ...req.body }];
+    const response = await ConsumerAccount.findOneAndUpdate(
+      {
+        id: req.body.id,
+      },
+      {
+        productPendingItem: newData,
+      },
+      {
+        returnDocument: "after",
+      }
+    );
+    // console.log(response.productPendingItem)
+    resp.status(200).json({
+      result: true,
+      message: response.productPendingItem,
+    });
+  } catch (e) {
+    console.log(e.message);
+    resp.status(401).json({ result: false });
+  }
+
+  /*
+
     try {
 
 
@@ -365,10 +376,13 @@ router.post('/requestProductReview', async (req, resp) => {
     }
 });
 
-router.post('/requestQnaAdd', async (req, resp) => {
-    try {
-        console.log(req.body);
-        const { qna, productId, userId } = req.body;
+
+//QNA 등록
+router.post("/requestQnaAdd", async (req, resp) => {
+  try {
+    console.log(req.body);
+    const { qna, productId, userId } = req.body;
+
 
         if (!qna || !productId || !userId) {
             return resp.status(401).json({ result: false });

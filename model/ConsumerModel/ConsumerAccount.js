@@ -6,7 +6,7 @@ const accountSchema = new mongoose.Schema({
     passWord: String,
     phoneNumber: String,
     birth: String,
-    zzimList: [{ date: Number, itemSKU: String, zzimType: Boolean }],
+    zzimList: [{ zzimDate: Date, itemSKU: String, zzimType: Boolean }],
     productPendingItem: { type: Array, default: [] },
     productCompleteItem: { type: Array, default: [] },
     completeReview: { type: Array, default: [] }
