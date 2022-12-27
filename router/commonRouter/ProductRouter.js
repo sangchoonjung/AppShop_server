@@ -185,7 +185,7 @@ router.post("/categoryProductList", async (req, resp) => {
   }
 });
 
-//찜리스트에서 상품 불러오기
+//찜리스트에서 상품 불러오기 (완)
 router.post("/zzimProductList", async (req, resp) => {
   const token = req.headers["x-access-token"];
   if (!token) {
@@ -194,20 +194,28 @@ router.post("/zzimProductList", async (req, resp) => {
     const tokenCheck = jwt.verify(token, process.env.SECRET_KEY);
     console.log(tokenCheck);
 
+    const { zzimList } = req.body;
+    console.log(zzimList);
+
     try {
-      const { zzimList } = req.body;
-      //   console.log(zzimList);
       const item = zzimList.map((one) => {
         return one.itemSKU;
       });
 
       const data = await Product.find({ SKU: { $in: item } }).lean();
+      // const newData = data.map((one) => {
+      //   const idx = zzimList.findIndex((zzimListItem) => {
+      //     zzimListItem.itemSKU === one.SKU
+      //   }
+      //   )
+      //   return { ...one, UserPickedDate: zzimList[idx].date }
+      // })
+      // console.log(newData, "뉴데이타");
+
       //   console.log(data, "찾은데이타");
       return resp.status(200).json({ result: true, message: data });
     } catch (e) {
-      return resp
-        .status(401)
-        .json({ result: false, message: "찜한 아이템 없음" });
+      return resp.status(401).json({ result: false, message: e });
     }
   }
 });
@@ -252,7 +260,7 @@ router.post("/requestProductList", async (req, resp) => {
     console.log(e.message);
   }
 });
-//pending 수량 수정
+//pending 수량 수정 (사용안함)
 router.post("/requestProductFix", async (req, resp) => {
   try {
     console.log(req.body.id);
@@ -364,6 +372,7 @@ router.post("/requestProductReview", async (req, resp) => {
   }
 });
 
+//QNA 등록
 router.post("/requestQnaAdd", async (req, resp) => {
   try {
     console.log(req.body);

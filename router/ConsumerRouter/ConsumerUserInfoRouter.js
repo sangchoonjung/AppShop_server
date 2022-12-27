@@ -8,25 +8,25 @@ const fs = require("fs")
 const multer = require("multer");
 const ConsumerAccount = require('../../model/ConsumerModel/ConsumerAccount');
 
-// 찜 추가삭제
+// 찜 추가삭제 (완)
 router.post("/zzim", async (req, resp) => {
-    // console.log(req.body, "ㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴ");
+
     try {
         const { user } = req.body;
-        const value = req.body.zzimList;
-        console.log(user, value)
+        const { zzimList } = req.body;
+        console.log(zzimList, "밸륜ㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴ")
+
         const response = await ConsumerAccount.findOneAndUpdate({ id: user }, {
-            zzimList: value
+            zzimList: zzimList
         }, { returnDocument: "after" })
         resp.status(200).json({ result: true, message: response });
     } catch (e) {
         console.log(e.message)
         resp.status(401).json({ result: false });
     }
-
-
 });
 
+// 소비자 리뷰 사진등록
 const upload = multer({
     storage: multer.diskStorage({
         destination: function (req, file, callback) {
@@ -110,7 +110,7 @@ router.post("/requestReview", upload.single("image"), async (req, resp) => {
 router.post("/pendToComple", async (req, resp) => {
     console.log(req.body);
     try {
-        const origin = await Account.findOne({ id: req.body.id }).select("productCompleteItem");
+        const origin = await ConsumerAccount.findOne({ id: req.body.id }).select("productCompleteItem");
         // console.log(origin.productCompleteItem,"origin")
         const response = await Account.findOneAndUpdate({ id: req.body.id }, {
             productPendingItem: [],
