@@ -61,42 +61,48 @@ router.post('/addProduct', async (req, res) => {
       //타입지정
       contentType: result.mainImage.mimetype,
     });
-
-    await uploadBytes(fileRef, mainFile, {
-      //타입지정
-      contentType: result.mainImage.mimetype,
-    });
     const mainImg = await getDownloadURL(fileRef);
 
-    /*
+    // console.log(mainImg, "메인이미지");
+
     //서브이미지 스토리지 등록
-    const subPhotoList = [];
-    for (let one of result.subImage) {
-        const fileRef = ref(dirRef, one.newFilename);
-        const file = fs.readFileSync(one.filepath);
-        await uploadBytes(fileRef, file, {
-            //타입지정
-            contentType: one.mimetype,
-        });
-        subPhotoList.push(await getDownloadURL(fileRef));
-    }
+
+    // const subPhotoList = [];
+    // for (let one of result.subImage) {
+    //   const fileRef = ref(dirRef, one.newFilename);
+    //   const file = fs.readFileSync(one.filepath);
+    //   await uploadBytes(fileRef, file, {
+    //     //타입지정
+    //     contentType: one.mimetype,
+    //   });
+    //   subPhotoList.push(await getDownloadURL(fileRef));
+    // }
     // console.log(subPhotoList);
-    */
+
     //원래 코드
 
-    const subPhotoList = await Promise.all(
-      result.subImage.map(async (one) => {
-        const fileRef = ref(dirRef, one.newFilename);
-        const file = fs.readFileSync(one.filepath);
-        await uploadBytes(fileRef, file, {
-          contentType: one.mimetype,
-        });
-        return await getDownloadURL(fileRef);
-      })
-    );
-    //Promise all
 
-    console.log(result.input, '넘어온 데이타');
+    let subPhotoList;
+    if (result.subImage) {
+      if (result.subImage._events) {
+        result.subImage = [result.subImage];
+      }
+      subPhotoList = await Promise.all(
+
+        result.subImage.map(async (one) => {
+          const fileRef = ref(dirRef, one.newFilename);
+          const file = fs.readFileSync(one.filepath);
+          await uploadBytes(fileRef, file, {
+            contentType: one.mimetype,
+          });
+          return await getDownloadURL(fileRef);
+        })
+      );
+    }
+
+    // console.log(subPhotoList, "서브이미지");
+
+    // console.log(result.input, '넘어온 데이타');
     const getData = JSON.parse(result.input);
     // console.log(jwt.verify(reqToken, process.env.SECRET_KEY), "토큰sssssssssssssssss")
     const putData = {
@@ -121,7 +127,8 @@ router.post('/addProduct', async (req, res) => {
     const response = await Product.create(putData);
     return res.status(200).json({ result: true, message: response });
   } catch (e) {
-    res.status(500).json({ result: false, message: 'Server Error' });
+    console.log(e)
+    res.status(500).json({ result: false, message: e });
   }
 });
 
@@ -137,7 +144,7 @@ router.post('/getProductList', async (req, res) => {
     const response = await Product.find({ SellerId: token.email });
     return res.status(200).json({ result: true, message: response });
   } catch (e) {
-    console.log(e.message);
+    console.log(e);
     return res.status(401).json({ result: false, message: 'TOKEN ERROR' });
   }
 });
