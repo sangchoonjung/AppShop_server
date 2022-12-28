@@ -30,9 +30,7 @@ app.use('/api/product', ProductRouter);
 app.use('/api/userInfo', ConsumerUserInfoRouter);
 
 app.use(express.static(path.join(__dirname, 'static')));
-let asdf = []
-app.listen(8080, () => {
 
-    asdf.push
+app.listen(8080, () => {
     console.log('AppShop SERVER START');
 });
